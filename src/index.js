@@ -22,7 +22,12 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "get":
-      // ... id
+      const oneContact = await getContactById(id);
+      if (oneContact) {
+        console.table(oneContact);
+      } else {
+        console.warn("\x1B[31m Contact not found!");
+      }
       break;
 
     case "add":
