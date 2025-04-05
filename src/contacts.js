@@ -1,9 +1,12 @@
 import fs from "node:fs/promises";
+import path from "node:path";
 
-// const contactsPath = path.
+// const contactsPath = path.join(process.cwd, "src", "db", "contacts.json");
+const contactsPath = path.resolve("src", "db", "contacts.json");
 
 async function listContacts() {
-  // ...твій код. Повертає масив контактів.
+  const allContacts = await fs.readFile(contactsPath, "utf-8");
+  return JSON.parse(allContacts);
 }
 
 async function getContactById(contactId) {
@@ -17,3 +20,5 @@ async function removeContact(contactId) {
 async function addContact(name, email, phone) {
   // ...твій код. Повертає об'єкт доданого контакту (з id).
 }
+
+export { listContacts, getContactById, removeContact, addContact };
