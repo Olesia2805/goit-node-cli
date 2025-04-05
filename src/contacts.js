@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 
 // const contactsPath = path.join(process.cwd, "src", "db", "contacts.json");
 const contactsPath = path.resolve("src", "db", "contacts.json");
+const updateContactsData = contacts => fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
 async function listContacts() {
   try {
@@ -27,7 +28,18 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId) {
-  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
+  const allContacts = await listContacts();
+  const index = allContacts.findIndex((item) => item.id === contactId);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const [removedContact] = allContacts.splice(index, 1);
+
+  await updateContactsData(allContacts);
+
+  return removedContact;
 }
 
 async function addContact(name, email, phone) {
@@ -46,7 +58,8 @@ async function addContact(name, email, phone) {
   };
 
   allContacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+
+  await updateContactsData(allContacts);
 
   return newContact;
 }

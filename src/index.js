@@ -12,7 +12,6 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-// TODO: рефакторити
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
@@ -36,16 +35,15 @@ async function invokeAction({ action, id, name, email, phone }) {
     case "add":
       const newContact = await addContact(name, email, phone);
 
-      if (newContact) {
-        console.table(newContact);
-      } else {
-        console.warn("\x1B[31m Contact not added!");
-      }
+      newContact ? console.table(newContact) : console.warn("\x1B[31m Contact not added!");
 
       break;
 
     case "remove":
-      // ... id
+      const removedContact = await removeContact(id);
+
+      removedContact ? console.table(removedContact) : console.warn("\x1B[31m Contact not found!");
+    
       break;
 
     default:
