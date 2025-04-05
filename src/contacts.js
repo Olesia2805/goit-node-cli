@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { nanoid } from "nanoid";
 
 // const contactsPath = path.join(process.cwd, "src", "db", "contacts.json");
 const contactsPath = path.resolve("src", "db", "contacts.json");
@@ -22,7 +23,7 @@ async function getContactById(contactId) {
 
   const contact = allContacts.find((item) => item.id === contactId);
 
-  return contact ? contact : null;
+  return contact || null;
 }
 
 async function removeContact(contactId) {
@@ -30,7 +31,24 @@ async function removeContact(contactId) {
 }
 
 async function addContact(name, email, phone) {
-  // ...твій код. Повертає об'єкт доданого контакту (з id).
+  if (!name || !email || !phone) {
+    console.error("All fields are required!");
+    return null;
+  }
+
+  const allContacts = await listContacts();
+
+  const newContact = {
+    id: nanoid(),
+    name,
+    email,
+    phone,
+  };
+
+  allContacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+
+  return newContact;
 }
 
 export { listContacts, getContactById, removeContact, addContact };

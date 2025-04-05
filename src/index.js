@@ -34,7 +34,14 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "add":
-      // ... name email phone
+      const newContact = await addContact(name, email, phone);
+
+      if (newContact) {
+        console.table(newContact);
+      } else {
+        console.warn("\x1B[31m Contact not added!");
+      }
+
       break;
 
     case "remove":
