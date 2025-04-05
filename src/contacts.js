@@ -5,17 +5,24 @@ import path from "node:path";
 const contactsPath = path.resolve("src", "db", "contacts.json");
 
 async function listContacts() {
-  const allContacts = await fs.readFile(contactsPath, "utf-8");
-  return JSON.parse(allContacts);
+  try {
+    const allContacts = await fs.readFile(contactsPath, "utf-8");
+
+    const parsed = JSON.parse(allContacts);
+    return Array.isArray(parsed) ? parsed : [];
+
+  } catch (error) {
+    console.error("Error reading contacts file:", error.message);
+    return null;
+  }
 }
 
 async function getContactById(contactId) {
   const allContacts = await listContacts();
+
   const contact = allContacts.find((item) => item.id === contactId);
-  if (!contact) {
-    return null;
-  }
-  return contact;
+
+  return contact ? contact : null;
 }
 
 async function removeContact(contactId) {

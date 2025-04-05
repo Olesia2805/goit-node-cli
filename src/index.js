@@ -16,18 +16,21 @@ const options = program.opts();
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      // ...
       const allContacts = await listContacts();
-      console.table(allContacts);
+
+      if (!allContacts || allContacts.length === 0) {
+        console.warn("\x1B[31mContacts not found!");
+      } else {
+        console.table(allContacts);
+      }
+
       break;
 
     case "get":
       const oneContact = await getContactById(id);
-      if (oneContact) {
-        console.table(oneContact);
-      } else {
-        console.warn("\x1B[31m Contact not found!");
-      }
+
+      oneContact ? console.table(oneContact) : console.warn("\x1B[31m Contact not found!");
+    
       break;
 
     case "add":
